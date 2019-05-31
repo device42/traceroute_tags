@@ -18,7 +18,7 @@ Once installed, the script itself is run by this command: `python traceroute_tag
 ### Configuration
 -----------------------------
 Prior to using the script, it must be configured to connect to your Device42 instance.
-* Save a copy of mapping.xml.sample as mapping.xml. 
+* Save a copy of configuration.xml.sample as configuration.xml. 
 * Enter your URL, User, Password (lines 4-6).
 * Update your DOQL according to your requirements (lines 7).
 * configure hop count and timeout(ms) (lines 9-10).
@@ -32,7 +32,7 @@ Prior to using the script, it must be configured to connect to your Device42 ins
 
 ### Info
 -----------------------------
-* mapping.xml - file from where we get fields relations between D42 and FreshService
+* configuration.xml - file from where we get fields relations between D42 and FreshService
 * devicd42.py - file with integration device42 instance
 * traceroute.py - file with python traceroute code using raw socket.
 * traceroute_tags.py - start script file.
