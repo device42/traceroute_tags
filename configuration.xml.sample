@@ -1,0 +1,14 @@
+<meta>
+    <settings>
+        <device42
+                url="http://192.168.0.1"
+                user="user"
+                pass="pass"
+                doql="select view_device_v1.device_pk, view_device_v1.name, view_device_v1.tags as device_tags, view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address, view_ipaddress_v1.tags as ipaddress_tags from view_device_v1 left join view_ipaddress_v1 on view_device_v1.device_pk = view_ipaddress_v1.device_fk union select view_device_v1.device_pk, view_device_v1.name, view_device_v1.tags as device_tags, view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address, view_ipaddress_v1.tags as ipaddress_tags from view_ipaddress_v1 left join view_device_v1 on view_device_v1.device_pk = view_ipaddress_v1.device_fk"
+                />
+        <hop value="3"/>
+        <timeout value="1000"/>
+        <ip-tags success="tracert-success" no-device="no-device" failure="tracert-failure"/>
+        <device-tags success="tracert-success" no-ipaddress="no-ipaddress" failure="tracert-failure"/>
+    </settings>
+</meta>
