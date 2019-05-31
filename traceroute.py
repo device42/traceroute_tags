@@ -2,6 +2,10 @@ import socket
 import random
 import struct
 import time
+import platform
+import os
+import re
+
 
 __all__ = ['Tracer']
 
@@ -28,48 +32,59 @@ class Tracer(object):
         Raises:
             IOError
         """
-        try:
-            dst_ip = socket.gethostbyname(self.dst)
-        except socket.error as e:
-            raise IOError('Unable to resolve {}: {}', self.dst, e)
-
-        text = 'traceroute to {} ({}), {} hops max'.format(
-            self.dst,
-            dst_ip,
-            self.hops
-        )
-
-        print(text)
-
-        while True:
-            startTimer = time.time()
-            receiver = self.create_receiver()
-            sender = self.create_sender()
-            sender.sendto(b'', (self.dst, self.port))
-
-            addr = None
+        if platform.system().lower() == "linux":
             try:
-                data, addr = receiver.recvfrom(1024)
-                entTimer = time.time()
+                dst_ip = socket.gethostbyname(self.dst)
             except socket.error as e:
-                print(str(e))
-                pass
-                # raise IOError('Socket error: {}'.format(e))
-            finally:
-                receiver.close()
-                sender.close()
+                raise IOError('Unable to resolve {}: {}', self.dst, e)
 
-            if addr:
-                timeCost = round((entTimer - startTimer) * 1000, 2)
-                if addr[0] == dst_ip:
-                    return True
-            else:
-                print('{:<4} *'.format(self.ttl))
+            text = 'traceroute to {} ({}), {} hops max'.format(
+                self.dst,
+                dst_ip,
+                self.hops
+            )
 
-            self.ttl += 1
+            print(text)
 
-            if self.ttl > self.hops:
-                return False
+            while True:
+                startTimer = time.time()
+                receiver = self.create_receiver()
+                sender = self.create_sender()
+                sender.sendto(b'', (self.dst, self.port))
+
+                addr = None
+                try:
+                    data, addr = receiver.recvfrom(1024)
+                    entTimer = time.time()
+                except socket.error as e:
+                    print(str(e))
+                    pass
+                    # raise IOError('Socket error: {}'.format(e))
+                finally:
+                    receiver.close()
+                    sender.close()
+
+                if addr:
+                    if addr[0] == dst_ip:
+                        return True
+                else:
+                    print('{:<4} *'.format(self.ttl))
+
+                self.ttl += 1
+
+                if self.ttl > self.hops:
+                    return False
+        else:  # Windows
+            cmd = "tracert -d -h %d -w %d %s" % (self.hops, self.timeout, self.dst)
+            p = os.popen(cmd)
+            output = p.read()
+            lines = output.splitlines()
+            for line in lines:
+                x = re.search(r"^\s*\d+.*$", line)
+                if x is not None:
+                    if line.find(self.dst) != -1:
+                        return True
+            return False
 
     def create_receiver(self):
         """

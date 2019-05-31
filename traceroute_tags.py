@@ -10,6 +10,7 @@ import xml.etree.ElementTree as eTree
 from xmljson import badgerfish as bf
 import time
 from traceroute import Tracer
+import platform
 
 
 logger = logging.getLogger('log')
@@ -94,7 +95,7 @@ def task_execute(settings, device42):
             if "@no-device" in settings["ip-tags"]:
                 device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@no-device"])
         if source["ipaddress_pk"] is None:
-            if "@no-ipaddress" in settings["ip-tags"]:
+            if "@no-ipaddress" in settings["device-tags"]:
                 device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@no-ipaddress"])
         else:
             tracert_result = tracert(ip_address, settings)
@@ -139,7 +140,12 @@ def main():
 
 
 if __name__ == "__main__":
-    print('Running...')
-    ret_val = main()
-    print('Done')
-    sys.exit(ret_val)
+    system = platform.system().lower()
+    if system != 'windows' and system != 'linux':
+        print("This script runs on Linux or Windows.")
+        sys.exit()
+    else:
+        print('Running...')
+        ret_val = main()
+        print('Done')
+        sys.exit(ret_val)

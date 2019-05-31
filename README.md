@@ -28,7 +28,7 @@ Prior to using the script, it must be configured to connect to your Device42 ins
 
 ### Compatibility
 -----------------------------
-* Script runs on Linux as root privilege.
+* Script runs on Linux as root privilege and Windows.
 
 ### Info
 -----------------------------
