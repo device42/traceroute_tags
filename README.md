@@ -32,7 +32,7 @@ Prior to using the script, it must be configured to connect to your Device42 ins
 
 ### Info
 -----------------------------
-* configuration.xml - file from where we get fields relations between D42 and FreshService
+* configuration.xml - file from where we get configuration information about D42 and traceroute arguments.
 * devicd42.py - file with integration device42 instance
 * traceroute.py - file with python traceroute code using raw socket.
 * traceroute_tags.py - start script file.
