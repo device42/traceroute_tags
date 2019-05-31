@@ -68,13 +68,9 @@ def task_execute(settings, device42):
 
     doql = _resource['@doql']
 
-    source_url = _resource['@url']
-    if "@extra-filter" in _resource:
-        source_url += _resource["@extra-filter"] + "&amp;"
-
     logger.info("Getting all devices and ip addresses in D42.")
     sources = device42.doql(query=doql)
-    logger.info("finished getting all existing devices in FS.")
+    logger.info("Finished getting all devices and ip addresses in D42.")
     for source in sources:
         if source["name"] is None:
             device_name = ""
@@ -97,7 +93,7 @@ def task_execute(settings, device42):
         if source["device_pk"] is None:
             if "@no-device" in settings["ip-tags"]:
                 device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@no-device"])
-        elif source["ipaddress_pk"] is None:
+        if source["ipaddress_pk"] is None:
             if "@no-ipaddress" in settings["ip-tags"]:
                 device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@no-ipaddress"])
         else:
@@ -105,12 +101,12 @@ def task_execute(settings, device42):
             if tracert_result:
                 if "@success" in settings["ip-tags"]:
                     device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@success"])
-                if "@success" in settings["device-tags"]:
+                if "@success" in settings["device-tags"] and source["device_pk"] is not None:
                     device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@success"])
             else:
                 if "@failure" in settings["ip-tags"]:
                     device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@failure"])
-                if "@failure" in settings["device-tags"]:
+                if "@failure" in settings["device-tags"] and source["device_pk"] is not None:
                     device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@failure"])
         logger.info("finished device %s, ipaddress %s" % (device_name, ip_address))
 
