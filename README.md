@@ -22,7 +22,7 @@ Prior to using the script, it must be configured to connect to your Device42 ins
 * Enter your URL, User, Password (lines 4-6).
 * Update your DOQL according to your requirements (lines 7).
 * Configure hop count and timeout(ms) (lines 9-10).
-* Set tag information for devices and IPs (lines 11-12). You can remove any of the success, no-device, or failure attributes to not update tags for those conditions.
+* Set custom field information for devices and IPs (line 11). You can change custom field name.
 
 
 

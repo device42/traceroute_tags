@@ -11,6 +11,7 @@ from xmljson import badgerfish as bf
 import time
 from traceroute import Tracer
 import platform
+import socket
 
 
 logger = logging.getLogger('log')
@@ -40,6 +41,7 @@ def tracert(ip_address, settings):
         timeout = 1000  # 1 second
 
     tracert_result = False
+    last_ip = None
     try:
         logger.info("running traceroute")
         tracer = Tracer(
@@ -47,13 +49,13 @@ def tracert(ip_address, settings):
             hops=hop,
             timeout=timeout
         )
-        tracert_result = tracer.run()
+        tracert_result, last_ip = tracer.run()
 
         logger.info("finished traceroute.")
     except Exception as e:
         print(str(e))
 
-    return tracert_result
+    return tracert_result, last_ip
 
 
 def parse_config(url):
@@ -69,47 +71,29 @@ def task_execute(settings, device42):
 
     doql = _resource['@doql']
 
-    logger.info("Getting all devices and ip addresses in D42.")
+    logger.info("Getting all ip addresses in D42.")
     sources = device42.doql(query=doql)
-    logger.info("Finished getting all devices and ip addresses in D42.")
+    logger.info("Finished getting all ip addresses in D42.")
+
+    run_ip = socket.gethostbyname(socket.gethostname())
+
     for source in sources:
-        if source["name"] is None:
-            device_name = ""
-        else:
-            device_name = source["name"]
         if source["ip_address"] is None:
             ip_address = ""
         else:
             ip_address = source["ip_address"]
-        if source["device_tags"] is None:
-            device_tags = ""
-        else:
-            device_tags = source["device_tags"]
-        if source["ipaddress_tags"] is None:
-            ipaddress_tags = ""
-        else:
-            ipaddress_tags = source["ipaddress_tags"]
 
-        logger.info("Processing device %s, ipaddress %s" % (device_name, ip_address))
-        if source["device_pk"] is None:
-            if "@no-device" in settings["ip-tags"]:
-                device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@no-device"])
-        if source["ipaddress_pk"] is None:
-            if "@no-ipaddress" in settings["device-tags"]:
-                device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@no-ipaddress"])
+        if source["subnet_fk"] is None:
+            subnet_id = ""
         else:
-            tracert_result = tracert(ip_address, settings)
-            if tracert_result:
-                if "@success" in settings["ip-tags"]:
-                    device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@success"])
-                if "@success" in settings["device-tags"] and source["device_pk"] is not None:
-                    device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@success"])
-            else:
-                if "@failure" in settings["ip-tags"]:
-                    device42.set_ipaddress_tags(ip_address, ipaddress_tags, settings["ip-tags"]["@failure"])
-                if "@failure" in settings["device-tags"] and source["device_pk"] is not None:
-                    device42.set_device_tags(device_name, device_tags, settings["device-tags"]["@failure"])
-        logger.info("finished device %s, ipaddress %s" % (device_name, ip_address))
+            subnet_id = source["subnet_fk"]
+
+        logger.info("Processing ipaddress %s" % ip_address)
+        success, last_ip = tracert(ip_address, settings)
+
+        device42.set_ipaddress_custom_field(ip_address, subnet_id, settings["ip-tags"]["@custom-field"], last_ip, run_ip)
+
+        logger.info("finished ipaddress %s" % ip_address)
 
 
 def main():

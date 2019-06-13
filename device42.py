@@ -106,12 +106,26 @@ class Device42(object):
             pass
         return False
 
+    def set_ipaddress_custom_field(self, ipaddress, subnet_id, custom_field, value, notes):
+        path = "api/1.0/custom_fields/ip_address/"
+
+        params = {"ip_address": ipaddress, "subnet_id": subnet_id, "key": custom_field, "value": value,
+                  "notes": notes}
+        try:
+            ret = self._put(path, params)
+            if ret["code"] == 0:
+                return True
+        except Exception as e:
+            print(str(e))
+            pass
+        return False
+
     def doql(self, url=None, query=None):
         if url is None:
             url = "services/data/v1.0/query/"
         path = url
         if query is None:
-            query = "select view_device_v1.device_pk, view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address from view_device_v1 left join view_ipaddress_v1 on view_device_v1.device_pk = view_ipaddress_v1.device_fk union select view_device_v1.device_pk, view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address from view_ipaddress_v1 left join view_device_v1 on view_device_v1.device_pk = view_ipaddress_v1.device_fk"
+            query = "select distinct view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address from view_device_v1 left join view_ipaddress_v1 on view_device_v1.device_pk = view_ipaddress_v1.device_fk"
 
         data = {"output_type": "json", "query": query}
 

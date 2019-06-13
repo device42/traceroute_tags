@@ -43,11 +43,11 @@ class Tracer(object):
                 dst_ip,
                 self.hops
             )
-
             print(text)
 
+            last_ip = None
             while True:
-                startTimer = time.time()
+                # startTimer = time.time()
                 receiver = self.create_receiver()
                 sender = self.create_sender()
                 sender.sendto(b'', (self.dst, self.port))
@@ -55,7 +55,7 @@ class Tracer(object):
                 addr = None
                 try:
                     data, addr = receiver.recvfrom(1024)
-                    entTimer = time.time()
+                    # entTimer = time.time()
                 except socket.error as e:
                     print(str(e))
                     pass
@@ -65,26 +65,31 @@ class Tracer(object):
                     sender.close()
 
                 if addr:
+                    last_ip = addr[0]
                     if addr[0] == dst_ip:
-                        return True
+                        return True, last_ip
                 else:
                     print('{:<4} *'.format(self.ttl))
 
                 self.ttl += 1
 
                 if self.ttl > self.hops:
-                    return False
+                    return False, last_ip
         else:  # Windows
             cmd = "tracert -d -h %d -w %d %s" % (self.hops, self.timeout, self.dst)
+            last_ip = None
             p = os.popen(cmd)
             output = p.read()
             lines = output.splitlines()
             for line in lines:
                 x = re.search(r"^\s*\d+.*$", line)
                 if x is not None:
-                    if line.find(self.dst) != -1:
-                        return True
-            return False
+                    ip_addr = re.findall(r'[0-9]+(?:\.[0-9]+){3}', line)
+                    if len(ip_addr) > 0:
+                        last_ip = ip_addr[0]
+                        if ip_addr[-1] == self.dst:
+                            return True, last_ip
+            return False, last_ip
 
     def create_receiver(self):
         """
