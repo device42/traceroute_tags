@@ -78,8 +78,8 @@ def task_execute(settings, device42):
     run_ip = socket.gethostbyname(socket.gethostname())
 
     for source in sources:
-        if source["ip_address"] is None:
-            ip_address = ""
+        if source["ip_address"] is None or source["ip_address"].strip() == "":
+            continue
         else:
             ip_address = source["ip_address"]
 
