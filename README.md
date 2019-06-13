@@ -1,7 +1,7 @@
 [Device42](http://www.device42.com/) is a Continuous Discovery software for your IT Infrastructure. It helps you automatically maintain an up-to-date inventory of your physical, virtual, and cloud servers and containers, network components, software/services/applications, and their inter-relationships and inter-dependencies.
 
 
-This repository contains a script that helps traceroute IPs in Device42 and mark tags for devices and IPs.
+This repository contains a script that helps traceroute IPs in Device42 and set custom field information.
 
 ### Download and Installation
 -----------------------------
@@ -22,7 +22,7 @@ Prior to using the script, it must be configured to connect to your Device42 ins
 * Enter your URL, User, Password (lines 4-6).
 * Update your DOQL according to your requirements (lines 7).
 * Configure hop count and timeout(ms) (lines 9-10).
-* Set custom field information for devices and IPs (line 11). You can change custom field name.
+* Set custom field information for IPs (line 11). You can change custom field name.
 
 
 
@@ -43,4 +43,4 @@ We will support any issues you run into with the script and help answer any ques
 
 ### Version
 -----------------------------
-1.0.0
+2.0.0
