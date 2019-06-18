@@ -4,7 +4,7 @@
                 url="{d42_url}"
                 user="{user}"
                 pass="{pass}"
-                doql="SELECT DISTINCT view_ipaddress_v1.ipaddress_pk, view_ipaddress_v1.ip_address, view_ipaddress_v1.subnet_fk FROM view_device_v1 LEFT JOIN view_ipaddress_v1 ON view_device_v1.device_pk = view_ipaddress_v1.device_fk WHERE ip_address IS NOT NULL"
+                doql="SELECT DISTINCT view_ipaddress_v1.ipaddress_pk as ip_id, view_ipaddress_v1.ip_address, view_ipaddress_v1.subnet_fk FROM view_device_v1 LEFT JOIN view_ipaddress_v1 ON view_device_v1.device_pk = view_ipaddress_v1.device_fk WHERE ip_address IS NOT NULL"
                 />
         <hop value="3"/>
         <timeout value="1000"/>

@@ -106,10 +106,10 @@ class Device42(object):
             pass
         return False
 
-    def set_ipaddress_custom_field(self, ipaddress, subnet_id, custom_field, value, notes):
+    def set_ipaddress_custom_field(self, ip_id, ipaddress, custom_field, value, notes):
         path = "api/1.0/custom_fields/ip_address/"
 
-        params = {"ip_address": ipaddress, "subnet_id": subnet_id, "key": custom_field, "value": value,
+        params = {"id": ip_id, "key": custom_field, "value": value,
                   "notes": notes}
         try:
             ret = self._put(path, params)
@@ -131,3 +131,16 @@ class Device42(object):
 
         result = self._post(path, data)
         return result
+
+    def create_ipaddress(self, ip_address):
+        path = "api/1.0/ips/"
+
+        data = {"ipaddress": ip_address}
+
+        try:
+            ret = self._post(path, data)
+            if ret["code"] == 0:
+                return ret["msg"][1]
+            return None
+        except:
+            return None
