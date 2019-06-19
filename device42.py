@@ -132,7 +132,7 @@ class Device42(object):
         result = self._post(path, data)
         return result
 
-    def create_ipaddress_if_not_exist(self, ip_address):
+    def create_ipaddress(self, ip_address):
         path = "api/1.0/ips/"
 
         data = {"ipaddress": ip_address}
@@ -141,6 +141,19 @@ class Device42(object):
             ret = self._post(path, data)
             if ret["code"] == 0:
                 return ret["msg"][1]
+            return None
+        except:
+            return None
+
+    def find_ipaddress(self, ip_address):
+        path = "api/1.0/ips/"
+
+        data = {"ip": ip_address}
+
+        try:
+            ret = self._get(path, data)
+            if ret["total_count"] > 0:
+                return ret["ips"][0]["id"]
             return None
         except:
             return None

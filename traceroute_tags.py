@@ -83,10 +83,12 @@ def task_execute(settings, device42):
         else:
             ip_address = source["ip_address"]
 
-        ip_id = device42.create_ipaddress_if_not_exist(ip_address)
+        ip_id = device42.find_ipaddress(ip_address)
         if ip_id is None:
-            logger.info("Can't get id for ip %s." % ip_address)
-            continue
+            ip_id = device42.create_ipaddress(ip_address)
+            if ip_id is None:
+                logger.info("Can't get id for ip %s." % ip_address)
+                continue
 
         logger.info("Processing ipaddress %s" % ip_address)
         success, last_ip = tracert(ip_address, settings)
