@@ -132,7 +132,7 @@ class Device42(object):
         result = self._post(path, data)
         return result
 
-    def create_ipaddress(self, ip_address):
+    def create_ipaddress_if_not_exist(self, ip_address):
         path = "api/1.0/ips/"
 
         data = {"ipaddress": ip_address}

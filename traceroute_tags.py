@@ -83,7 +83,7 @@ def task_execute(settings, device42):
         else:
             ip_address = source["ip_address"]
 
-        ip_id = device42.create_ipaddress(ip_address)
+        ip_id = device42.create_ipaddress_if_not_exist(ip_address)
         if ip_id is None:
             logger.info("Can't get id for ip %s." % ip_address)
             continue
