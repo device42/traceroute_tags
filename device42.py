@@ -106,7 +106,7 @@ class Device42(object):
             pass
         return False
 
-    def set_ipaddress_custom_field(self, ip_id, ipaddress, custom_field, value, notes):
+    def set_ipaddress_custom_field(self, ip_id, custom_field, value, notes):
         path = "api/1.0/custom_fields/ip_address/"
 
         params = {"id": ip_id, "key": custom_field, "value": value,

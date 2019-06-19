@@ -83,18 +83,15 @@ def task_execute(settings, device42):
         else:
             ip_address = source["ip_address"]
 
-        if True or "ip_id" not in source or source["ip_id"] is None:
-            ip_id = device42.create_ipaddress(ip_address)
-            if ip_id is None:
-                logger.info("Can't get id for ip %s." % ip_address)
-                continue
-        else:
-            ip_id = source["ip_id"]
+        ip_id = device42.create_ipaddress(ip_address)
+        if ip_id is None:
+            logger.info("Can't get id for ip %s." % ip_address)
+            continue
 
         logger.info("Processing ipaddress %s" % ip_address)
         success, last_ip = tracert(ip_address, settings)
 
-        device42.set_ipaddress_custom_field(ip_id, ip_address, settings["ip-tags"]["@custom-field"], last_ip, run_ip)
+        device42.set_ipaddress_custom_field(ip_id, settings["ip-tags"]["@custom-field"], last_ip, run_ip)
 
         logger.info("finished ipaddress %s" % ip_address)
 
