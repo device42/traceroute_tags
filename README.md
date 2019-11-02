@@ -8,7 +8,7 @@ This repository contains a script that helps traceroute IPs in Device42 and set 
 To utilize the traceroute_tags script, Python 2.7, 3.5+ is required. The following Python Packages are required as well:
 
 * xmljson==0.2.0
-* requests==2.13.0
+* requests==2.20.0
 * pyparsing==2.1.10
 
 These can all be installed by running `pip install -r requirements.txt`.
